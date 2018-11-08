@@ -1,0 +1,26 @@
+{
+    "name": "davojs",
+    "version": "0.0.1",
+    "description": "An API for parsing and editing ChordPro songs.",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "test": "npx jest",
+        "test:watch": "npx jest --watch",
+        "build": "tsc",
+        "lint": "tslint -c tslint.json 'src/**/*.ts'"
+    },
+    "author": "Matthijs Smit",
+    "license": "ISC",
+    "devDependencies": {
+        "jest": "^23.6.0",
+        "prettier": "1.14.3",
+        "typescript": "^3.1.6"
+    },
+    "dependencies": {
+        "@types/jest": "^23.3.9",
+        "@types/uuid": "^3.4.4",
+        "ts-jest": "^23.10.4",
+        "uuid": "^3.3.2"
+    }
+}
