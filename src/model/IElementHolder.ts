@@ -1,3 +1,5 @@
+import { Element } from "./Element";
+
 export interface IElementHolder {
-	elements: Element[];
+	readonly elements: Element[];
 }

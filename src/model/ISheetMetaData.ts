@@ -1,3 +1,5 @@
+import { Chord } from "./Chord";
+
 export interface ISheetMetaData {
 	title: string | null;
 	subtitle: string | null;
@@ -7,7 +9,7 @@ export interface ISheetMetaData {
 	copyright: string | null;
 	album: string | null;
 	year: string | null;
-	key: string | null; // TODO - Add key enum
+	key: Chord | null; // TODO - Add key enum
 	time: string | null;
 	tempo: number | null;
 	duration: string | null;

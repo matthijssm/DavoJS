@@ -1,13 +1,17 @@
+import { SheetSection } from "src/model/SheetSection";
 import { ISheetMetaData } from "../model/ISheetMetaData";
 import { SheetModel } from "../model/SheetModel";
 import { DirectiveUtil } from "./utils/DirectiveUtils";
 import { MetaDataUtils } from "./utils/MetaDataUtils";
+import { SectionUtils } from "./utils/SectionUtils";
 
 export namespace ChordProParser {
 	export function parse(document: string): SheetModel {
 		const metaData: ISheetMetaData = collectMetaData(document);
 
 		const sheetModel = new SheetModel(metaData);
+
+		sheetModel.addSections(collectSections(document));
 
 		return sheetModel;
 	}
@@ -19,6 +23,12 @@ export namespace ChordProParser {
 
 		return metaData;
 	}
+
+	function collectSections(document: string): SheetSection[] {
+		return SectionUtils.parseSection(document);
+	}
+
+	function parseSection(section: string) {}
 
 	function documentWalker(document: string, callback: (line: string) => void) {
 		const lines = document.split("\n");

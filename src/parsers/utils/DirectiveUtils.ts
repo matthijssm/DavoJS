@@ -18,39 +18,82 @@ export enum DirectiveType {
 	DURATION,
 	CAPO,
 	META,
+	START_OF_CHORUS,
+	END_OF_CHORUS,
+	START_OF_VERSE,
+	END_OF_VERSE,
 	UNKNOWN,
 }
 
-const directiveRegex = /{[A-z]+:[A-z, ]*}/g;
+export const DIRECTIVE_REGEX = /{[A-Z,a-z]+:?.*}/g;
 
 export namespace DirectiveUtil {
 	export function getDirectives(document: string): Directive[] {
-		const rawDirectives = document.match(directiveRegex);
+		const rawDirectives = document.match(DIRECTIVE_REGEX);
 
 		if (rawDirectives) {
 			return rawDirectives.map((directive) => {
-				return cleanDirective(directive);
+				return createDirective(directive);
 			});
 		} else {
 			return [];
 		}
 	}
 
-	function cleanDirective(rawDirective: string): Directive {
+	export function getSectionDirective(line: string): Directive | null {
+		const rawDirectives = line.match(DIRECTIVE_REGEX);
+
+		return rawDirectives ? createSectionDirective(rawDirectives[0]) : null;
+	}
+
+	function createSectionDirective(rawDirective: string): Directive {
+		return generateDirective(rawDirective, (rawType) => getSectionDirectiveType(rawType));
+	}
+
+	function createDirective(rawDirective: string): Directive {
+		return generateDirective(rawDirective, (rawType) => getDirectiveType(rawType));
+	}
+
+	function generateDirective(rawDirective: string, callback: (rawType: string) => DirectiveType): Directive {
 		const directive: Directive = {
 			type: DirectiveType.UNKNOWN,
 			value: null,
 		};
 
-		rawDirective.replace("{", "");
-		rawDirective.replace("}", "");
+		const splittedDirective = cleanAndSplitDirective(rawDirective);
 
-		const splittedDirective = rawDirective.split(":", 2);
-
-		directive.type = getDirectiveType(splittedDirective[0]);
-		directive.value = splittedDirective[1];
+		directive.type = callback(splittedDirective[0]);
+		if (splittedDirective[1]) {
+			directive.value = splittedDirective[1].trim();
+		}
 
 		return directive;
+	}
+
+	function cleanAndSplitDirective(rawDirective: string): string[] {
+		const cleanedDirective = rawDirective.replace("{", "").replace("}", "");
+		return cleanedDirective.split(":", 2);
+	}
+
+	function getSectionDirectiveType(rawType: string): DirectiveType {
+		const type = rawType.toLowerCase().trim();
+
+		switch (type) {
+			case "soc":
+			case "start_of_chorus":
+				return DirectiveType.START_OF_CHORUS;
+			case "eoc":
+			case "end_of_chorus":
+				return DirectiveType.END_OF_CHORUS;
+			case "sov":
+			case "start_of_verse":
+				return DirectiveType.START_OF_VERSE;
+			case "eov":
+			case "end_of_verse":
+				return DirectiveType.END_OF_VERSE;
+		}
+
+		return DirectiveType.UNKNOWN;
 	}
 
 	function getDirectiveType(rawType: string): DirectiveType {
