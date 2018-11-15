@@ -35,9 +35,9 @@ export namespace DirectiveUtil {
 			return rawDirectives.map((directive) => {
 				return createDirective(directive);
 			});
-		} else {
-			return [];
 		}
+
+		return [];
 	}
 
 	export function getSectionDirective(line: string): Directive | null {
@@ -47,11 +47,11 @@ export namespace DirectiveUtil {
 	}
 
 	function createSectionDirective(rawDirective: string): Directive {
-		return generateDirective(rawDirective, (rawType) => getSectionDirectiveType(rawType));
+		return generateDirective(rawDirective, getSectionDirectiveType);
 	}
 
 	function createDirective(rawDirective: string): Directive {
-		return generateDirective(rawDirective, (rawType) => getDirectiveType(rawType));
+		return generateDirective(rawDirective, getDirectiveType);
 	}
 
 	function generateDirective(rawDirective: string, callback: (rawType: string) => DirectiveType): Directive {

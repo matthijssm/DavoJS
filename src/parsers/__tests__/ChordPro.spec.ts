@@ -100,8 +100,13 @@ describe("parsers.ChordPro", () => {
 			expect(parsed.metadata.time).toBe("16/4");
 		});
 
-		it("should have no sections", () => {
-			expect(parsed.sections.length).toBe(0);
+		it("should have one section", () => {
+			expect(parsed.sections.length).toBe(1);
+		});
+
+		it("the section should have a correct type and label", () => {
+			expect(parsed.sections[0].type).toBe("Verse");
+			expect(parsed.sections[0].label).toBe("");
 		});
 	});
 });

@@ -13,33 +13,40 @@ export namespace SectionUtils {
 			const modelSection = new SheetSection();
 
 			const lines = section.split(/[\r\n]{1}/g);
-			if (lines.length) {
-				const modelLines: SheetLine[] = [];
 
-				lines.forEach((line, index) => {
-					if (index === 0 && LineUtils.containsSectionData(line)) {
-						setSectionMetaData(line, modelSection);
-						return;
-					}
+			const modelLines = processLines(lines, modelSection);
 
-					if (LineUtils.containsDirective(line)) {
-						return;
-					}
-
-					const newLine = LineUtils.parseLine(line);
-
-					modelLines.push(newLine);
-				});
-
-				if (modelLines.length) {
-					modelSections.push(modelSection);
-				}
+			if (modelLines.length) {
+				modelSections.push(modelSection);
 			}
 
 			return modelSection;
 		});
 
 		return modelSections;
+	}
+
+	function processLines(lines: string[], section: SheetSection): SheetLine[] {
+		const modelLines: SheetLine[] = [];
+
+		if (lines.length) {
+			lines.forEach((line, index) => {
+				if (index === 0 && LineUtils.containsSectionData(line)) {
+					setSectionMetaData(line, section);
+					return;
+				}
+
+				if (LineUtils.containsDirective(line)) {
+					return;
+				}
+
+				const newLine = LineUtils.parseLine(line);
+
+				modelLines.push(newLine);
+			});
+		}
+
+		return modelLines;
 	}
 
 	function setSectionMetaData(line: string, section: SheetSection) {
