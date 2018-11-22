@@ -42,6 +42,7 @@ export namespace SectionUtils {
 
 				const newLine = LineUtils.parseLine(line);
 
+				section.lines.push(newLine);
 				modelLines.push(newLine);
 			});
 		}

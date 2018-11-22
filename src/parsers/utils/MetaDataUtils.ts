@@ -29,7 +29,7 @@ export namespace MetaDataUtils {
 				case DirectiveType.YEAR:
 					return (metaData.year = directive.value);
 				case DirectiveType.KEY:
-					return (metaData.key = ChordUtil.parse(directive.value!));
+					return (metaData.key = ChordUtil.parseNormalChord(directive.value!));
 				case DirectiveType.TIME:
 					return (metaData.time = directive.value);
 				case DirectiveType.TEMPO:
