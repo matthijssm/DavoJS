@@ -1,6 +1,5 @@
 import fs from "fs";
 
-import { parse } from "url";
 import { ChordProParser } from "../ChordProParser";
 
 describe("parsers.ChordPro", () => {
