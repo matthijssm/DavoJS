@@ -1,11 +1,10 @@
-import { SheetModel } from "./model/SheetModel";
+import { Sheet } from "./model/Sheet";
+import { ChordProParser } from "./parsers/ChordProParser";
 
 export namespace Davo {
-	export function parse(sheet: string): SheetModel | undefined {
-		// return true;
-		return undefined;
-	}
+    export function parseChordPro(sheet: string, key?: string): Sheet | undefined {
+        return ChordProParser.parse(sheet, key);
+    }
 
-	// TODO: Process comments
-	// TODO: Parse sheet to Nashville
+    // TODO: Parse comments through the model!
 }

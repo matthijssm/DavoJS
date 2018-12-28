@@ -1,5 +1,5 @@
-import { Element } from "./Element";
+import { AbstractElement } from "./AbstractElement";
 
 export interface IElementHolder {
-	readonly elements: Element[];
+    readonly elements: AbstractElement[];
 }

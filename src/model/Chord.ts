@@ -1,44 +1,88 @@
-import { Modifier, Scale } from "./SheetChord";
+import { Modifier, Quality } from "./SheetChord";
 
 export type Key = "A" | "B" | "C" | "D" | "E" | "F" | "G";
 
-const MINOR_REGEX = /^m[a-z,A-Z]{0}/g;
+const REGEX_MINOR_CHORD = /^m(?!aj)/g;
+
+const REGEX_DIMINISHED_CHORD = /^dim/g;
+
+const REGEX_AUGMENTED_CHORD = /^aug/g;
 
 export class Chord {
-	constructor(
-		public base: Key,
-		public modifier: Modifier,
-		public suffix?: string,
-		public bassBase?: Key,
-		public bassModifier?: Modifier,
-	) {}
+    constructor(
+        public base: Key,
+        public modifier: Modifier,
+        public suffix?: string,
+        public bassBase?: Key,
+        public bassModifier?: Modifier,
+    ) {}
 
-	get scale(): Scale {
-		if (this.suffix && MINOR_REGEX.test(this.suffix!)) {
-			return Scale.MINOR;
-		}
+    get adjectives(): string {
+        if (!this.suffix) return "";
 
-		return Scale.MAJOR;
-	}
+        let adjectives = this.suffix.replace(REGEX_MINOR_CHORD, "");
 
-	get modifierString(): "#" | "b" | "" {
-		switch (this.modifier) {
-			case Modifier.FLAT:
-				return "b";
-			case Modifier.SHARP:
-				return "#";
-			default:
-				return "";
-		}
-	}
+        adjectives = adjectives.replace(REGEX_DIMINISHED_CHORD, "");
 
-	public toString(): string {
-		const chordString = this.base + (this.modifier || "") + (this.suffix || "");
+        adjectives = adjectives.replace(REGEX_AUGMENTED_CHORD, "");
 
-		if (this.bassBase) {
-			return `${chordString}/${this.bassBase}${this.bassModifier || ""}`;
-		}
+        return adjectives;
+    }
 
-		return chordString;
-	}
+    get chordBaseString(): string {
+        return this.base + this.modifierString;
+    }
+
+    get bassBaseString(): string {
+        return this.bassBase + this.bassModifierString;
+    }
+
+    get quality(): Quality {
+        if (this.suffix) {
+            if (this.suffix.match(REGEX_MINOR_CHORD)) {
+                return Quality.MINOR;
+            }
+
+            if (this.suffix.match(REGEX_DIMINISHED_CHORD)) {
+                return Quality.DIMINISHED;
+            }
+
+            if (this.suffix.match(REGEX_AUGMENTED_CHORD)) {
+                return Quality.AUGEMENTED;
+            }
+        }
+
+        return Quality.MAJOR;
+    }
+
+    get modifierString(): "#" | "b" | "" {
+        switch (this.modifier) {
+            case Modifier.FLAT:
+                return "b";
+            case Modifier.SHARP:
+                return "#";
+            default:
+                return "";
+        }
+    }
+    get bassModifierString(): "#" | "b" | "" {
+        switch (this.bassModifier) {
+            case Modifier.FLAT:
+                return "b";
+            case Modifier.SHARP:
+                return "#";
+            default:
+                return "";
+        }
+    }
+
+    toString(): string {
+        const chordString = this.base + (this.modifierString || "") + (this.suffix || "");
+
+        if (this.bassBase) {
+            return `${chordString}/${this.bassBase}${this.bassModifier || ""}`;
+        }
+
+        return chordString;
+    }
 }

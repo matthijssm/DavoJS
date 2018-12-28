@@ -1,7 +1,7 @@
 import uuid = require("uuid");
 
-export abstract class Element {
-    public ID: string;
+export abstract class AbstractElement {
+    ID: string;
 
     constructor() {
         this.ID = uuid.v4();

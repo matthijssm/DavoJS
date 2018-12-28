@@ -1,50 +1,34 @@
-import { Chord, Key, Modifier } from "../Chord";
-import { SheetChord } from "../SheetChord";
+import { Chord, Key } from "../Chord";
+import { SheetChord, Modifier } from "../SheetChord";
 
 export namespace ChordUtil {
-	export function parse(chordString: string): SheetChord | null {
-		return parseStringToChord(
-			chordString,
-			(base: Key, modifier: Modifier, suffix: string, bassBase: Key, bassModifier: Modifier) => {
-				return new SheetChord(
-					base.toUpperCase() as Key,
-					modifier as Modifier,
-					suffix,
-					bassBase ? (bassBase.toUpperCase() as Key) : undefined,
-					bassModifier as Modifier,
-				);
-			},
-		) as SheetChord | null;
-	}
+    export function parse(chordString: string): Chord | null {
+        const chordRegex = /([A-G]|[a-g])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?/i;
 
-	export function parseNormalChord(chordString: string): Chord | null {
-		return parseStringToChord(
-			chordString,
-			(base: Key, modifier: Modifier, suffix: string, bassBase: Key, bassModifier: Modifier) => {
-				return new Chord(base as Key, modifier as Modifier, suffix, bassBase as Key, bassModifier as Modifier);
-			},
-		);
-	}
+        const parts = chordRegex.exec(chordString);
 
-	function parseStringToChord(
-		chordString: string,
-		callback: (
-			base: Key,
-			modifier: Modifier,
-			suffix: string,
-			bassBase: Key,
-			bassModifier: Modifier,
-		) => Chord | SheetChord,
-	): Chord | SheetChord | null {
-		const chordRegex = /([A-G])(#|b)?([^/\s]*)(\/([A-G])(#|b)?)?/i;
+        if (parts) {
+            const [, base, modifier, suffix, , bassBase, bassModifier] = parts;
+            return new Chord(
+                base as Key,
+                parseModifier(modifier),
+                suffix,
+                bassBase as Key,
+                parseModifier(bassModifier),
+            );
+        }
 
-		const parts = chordRegex.exec(chordString);
+        return null;
+    }
 
-		if (parts) {
-			const [, base, modifier, suffix, , bassBase, bassModifier] = parts;
-			return callback(base as Key, modifier as Modifier, suffix, bassBase as Key, bassModifier as Modifier);
-		}
-
-		return null;
-	}
+    export function parseModifier(modifierString: string): Modifier {
+        switch (modifierString) {
+            case "b":
+                return Modifier.FLAT;
+            case "#":
+                return Modifier.SHARP;
+            default:
+                return Modifier.NONE;
+        }
+    }
 }

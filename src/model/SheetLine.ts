@@ -1,15 +1,15 @@
-import { Element } from "./Element";
+import { AbstractElement } from "./AbstractElement";
 import { SheetChord } from "./SheetChord";
 
 export enum LineType {
-	Lyric,
-	Comment,
+    Lyric,
+    Comment,
 }
 
-export class SheetLine extends Element {
-	public chords: SheetChord[] = [];
+export class SheetLine extends AbstractElement {
+    chords: SheetChord[] = [];
 
-	constructor(public text: string, readonly lineType: LineType = LineType.Lyric) {
-		super();
-	}
+    constructor(public text: string, readonly lineType: LineType = LineType.Lyric) {
+        super();
+    }
 }
